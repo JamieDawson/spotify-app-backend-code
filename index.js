@@ -22,6 +22,18 @@ app.get("/", (req, res) => {
   res.send("Hello World!");
 });
 
+// mongoose
+//   .connect(mongoDBURL)
+//   .then(() => {
+//     console.log("connected to mongodb database!!!");
+//     app.listen(PORT, () => {
+//       console.log(`PORT IS ON ${PORT}`);
+//     });
+//   })
+//   .catch((error) => {
+//     console.log(error);
+//   });
+
 mongoose
   .connect(mongoDBURL)
   .then(() => {
@@ -31,7 +43,8 @@ mongoose
     });
   })
   .catch((error) => {
-    console.log(error);
+    console.error("Failed to connect to MongoDB:", error.message);
+    process.exit(1); // Exit the process if MongoDB connection fails
   });
 
 app.post("/albumsUpdate", async (request, response) => {
