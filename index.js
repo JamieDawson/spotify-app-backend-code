@@ -22,18 +22,6 @@ app.get("/", (req, res) => {
   res.send("Hello World!");
 });
 
-// mongoose
-//   .connect(mongoDBURL)
-//   .then(() => {
-//     console.log("connected to mongodb database!!!");
-//     app.listen(PORT, () => {
-//       console.log(`PORT IS ON ${PORT}`);
-//     });
-//   })
-//   .catch((error) => {
-//     console.log(error);
-//   });
-
 mongoose
   .connect(mongoDBURL)
   .then(() => {
@@ -99,3 +87,5 @@ app.get("/getAlbum", async (request, response) => {
     response.status(500).send({ message: error.message });
   }
 });
+
+export default app;
