@@ -13,7 +13,13 @@ const PORT = process.env.PORT || 5555;
 const mongoDBURL = process.env.MONGODB_URL;
 
 // Use the CORS middleware
-app.use(cors());
+app.use(
+  cors({
+    origin: "http://localhost:5173", // Replace with your frontend origin
+    methods: "GET,POST,PUT,DELETE,OPTIONS",
+    allowedHeaders: "Content-Type,Authorization",
+  })
+);
 
 // Middleware to parse JSON bodies
 app.use(bodyParser.json());
@@ -66,7 +72,7 @@ app.post("/albumsUpdate", async (request, response) => {
 
     return response.status(200).send(album);
   } catch (error) {
-    console.log(error.message);
+    console.error("Error in /albumsUpdate:", error.message);
     response.status(500).send({ message: error.message });
   }
 });
@@ -83,7 +89,7 @@ app.get("/getAlbum", async (request, response) => {
     // Send the found document as the response
     return response.status(200).send(album);
   } catch (error) {
-    console.log(error.message);
+    console.error("Error in /getAlbum:", error.message);
     response.status(500).send({ message: error.message });
   }
 });
