@@ -15,7 +15,7 @@ const mongoDBURL = process.env.MONGODB_URL;
 // Use the CORS middleware
 app.use(
   cors({
-    origin: "https://spotify-app-frontend-code.vercel.app/", // Replace with your frontend origin
+    origin: "https://spotify-app-frontend-code.vercel.app", // No trailing slash
     methods: "GET,POST,PUT,DELETE,OPTIONS",
     allowedHeaders: "Content-Type,Authorization",
   })
