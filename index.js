@@ -20,8 +20,9 @@ app.use(
       "https://spotify-app-frontend-code.vercel.app",
       "http://localhost:5173",
     ],
-    methods: "GET,POST,PUT,DELETE,OPTIONS",
-    allowedHeaders: "Content-Type,Authorization",
+    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+    allowedHeaders: ["Content-Type", "Authorization"],
+    credentials: true, // If you're using credentials
   })
 );
 
