@@ -5,6 +5,7 @@ import cors from "cors";
 import dotenv from "dotenv";
 import { body, validationResult } from "express-validator";
 import { Albums } from "./models/albumsModel.js";
+import rateLimit from "express-rate-limit"; // Import express-rate-limit
 
 // Load environment variables from .env file
 dotenv.config();
@@ -28,6 +29,16 @@ app.use(
 // Middleware to parse JSON bodies
 app.use(bodyParser.json());
 
+// Rate limit configuration
+const limiter = rateLimit({
+  windowMs: 1 * 60 * 1000, // 1 minute
+  max: 20, // limit each IP to 10 requests per windowMs
+  message: "Too many requests from this IP, please try again later.",
+});
+
+// Apply rate limiting to all requests
+app.use(limiter);
+
 app.get("/", (req, res) => {
   res.send("Hello World!");
 });
@@ -35,7 +46,7 @@ app.get("/", (req, res) => {
 mongoose
   .connect(mongoDBURL)
   .then(() => {
-    console.log("connected to mongodb database!!!");
+    console.log("connected to mongodb database!");
     app.listen(PORT, () => {
       console.log(`PORT IS ON ${PORT}`);
     });
