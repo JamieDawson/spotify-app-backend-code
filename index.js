@@ -3,6 +3,7 @@ import bodyParser from "body-parser";
 import mongoose from "mongoose";
 import cors from "cors";
 import dotenv from "dotenv";
+import { body, validationResult } from "express-validator";
 import { Albums } from "./models/albumsModel.js";
 
 // Load environment variables from .env file
@@ -44,41 +45,61 @@ mongoose
     process.exit(1); // Exit the process if MongoDB connection fails
   });
 
-app.post("/albumsUpdate", async (request, response) => {
-  try {
-    const updates = {};
+const normalizeString = (value) => {
+  return value.trim(); // Add any additional normalization logic you need here
+};
 
-    // Add only the fields that are present in the request body to the updates object
-    if (request.body.one !== undefined) updates.one = request.body.one;
-    if (request.body.two !== undefined) updates.two = request.body.two;
-    if (request.body.three !== undefined) updates.three = request.body.three;
-    if (request.body.four !== undefined) updates.four = request.body.four;
-
-    if (Object.keys(updates).length === 0) {
-      return response.status(400).send({
-        message: "No fields to update",
-      });
+app.post(
+  "/albumsUpdate",
+  [
+    // Validate and sanitize each field
+    body("one").optional().isString().customSanitizer(normalizeString),
+    body("two").optional().isString().customSanitizer(normalizeString),
+    body("three").optional().isString().customSanitizer(normalizeString),
+    body("four").optional().isString().customSanitizer(normalizeString),
+  ],
+  async (request, response) => {
+    // Check for validation errors
+    const errors = validationResult(request);
+    if (!errors.isEmpty()) {
+      return response.status(400).json({ errors: errors.array() });
     }
 
-    // Replace `yourUniqueIdentifier` with the actual identifier you use
-    const filter = { _id: "66a9d1828fb1ffaa63f4ed3c" };
+    try {
+      const updates = {};
 
-    // Update the existing document only; do not create a new document
-    const result = await Albums.updateOne(filter, { $set: updates });
+      // Add only validated fields to the updates object
+      if (request.body.one !== undefined) updates.one = request.body.one;
+      if (request.body.two !== undefined) updates.two = request.body.two;
+      if (request.body.three !== undefined) updates.three = request.body.three;
+      if (request.body.four !== undefined) updates.four = request.body.four;
 
-    if (result.matchedCount === 0) {
-      return response.status(404).send({ message: "Document not found" });
+      if (Object.keys(updates).length === 0) {
+        return response.status(400).send({
+          message: "No fields to update",
+        });
+      }
+
+      // Define the filter to locate the document
+      const filter = { _id: "66a9d1828fb1ffaa63f4ed3c" };
+
+      // Update the existing document only; do not create a new document
+      const result = await Albums.updateOne(filter, { $set: updates });
+
+      if (result.matchedCount === 0) {
+        return response.status(404).send({ message: "Document not found" });
+      }
+
+      // Fetch the updated document
+      const album = await Albums.findOne(filter);
+
+      return response.status(200).send(album);
+    } catch (error) {
+      console.error("Error in /albumsUpdate:", error.message);
+      response.status(500).send({ message: error.message });
     }
-
-    // Fetch the updated document
-    const album = await Albums.findOne(filter);
-
-    return response.status(200).send(album);
-  } catch (error) {
-    console.error("Error in /albumsUpdate:", error.message);
-    response.status(500).send({ message: error.message });
   }
-});
+);
 
 app.get("/getAlbum", async (request, response) => {
   try {
