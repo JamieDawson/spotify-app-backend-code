@@ -5,6 +5,7 @@ import cors from "cors";
 import dotenv from "dotenv";
 import { body, validationResult } from "express-validator";
 import { Albums } from "./models/albumsModel.js";
+import rateLimit from "express-rate-limit"; // Import express-rate-limit
 
 // Load environment variables from .env file
 dotenv.config();
