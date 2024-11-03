@@ -12,7 +12,6 @@ dotenv.config();
 const app = express();
 const PORT = process.env.PORT || 5555;
 const mongoDBURL = process.env.MONGODB_URL;
-app.use(cors()); // This will allow all origins
 
 // Use the CORS middleware
 app.use(
@@ -104,14 +103,12 @@ app.post(
 
 app.get("/getAlbum", async (request, response) => {
   try {
-    // Find the document with the given ID
+    console.log("Fetching album with ID: 66a9d1828fb1ffaa63f4ed3c");
     const album = await Albums.findOne({ _id: "66a9d1828fb1ffaa63f4ed3c" });
-
     if (!album) {
+      console.error("Album not found");
       return response.status(404).send({ message: "Document not found" });
     }
-
-    // Send the found document as the response
     return response.status(200).send(album);
   } catch (error) {
     console.error("Error in /getAlbum:", error.message);
