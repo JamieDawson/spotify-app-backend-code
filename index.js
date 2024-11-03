@@ -5,7 +5,6 @@ import cors from "cors";
 import dotenv from "dotenv";
 import { body, validationResult } from "express-validator";
 import { Albums } from "./models/albumsModel.js";
-import rateLimit from "express-rate-limit"; // Import express-rate-limit
 
 // Load environment variables from .env file
 dotenv.config();
@@ -18,14 +17,13 @@ const mongoDBURL = process.env.MONGODB_URL;
 app.use(
   cors({
     origin: [
-      "https://spotify-app-frontend-code.vercel.app",
-      "http://localhost:5173",
-    ], // Include both production and development origins
+      "https://spotify-app-frontend-code.vercel.app", // Production
+      "http://localhost:5173", // Development
+    ],
     methods: "GET,POST,PUT,DELETE,OPTIONS",
     allowedHeaders: "Content-Type,Authorization",
   })
 );
-
 // Middleware to parse JSON bodies
 app.use(bodyParser.json());
 
@@ -46,16 +44,15 @@ app.get("/", (req, res) => {
 mongoose
   .connect(mongoDBURL)
   .then(() => {
-    console.log("connected to mongodb database!");
+    console.log("connected to mongodb database!!!");
     app.listen(PORT, () => {
       console.log(`PORT IS ON ${PORT}`);
     });
   })
   .catch((error) => {
     console.error("Failed to connect to MongoDB:", error.message);
-    process.exit(1); // Exit the process if MongoDB connection fails
+    process.exit(1);
   });
-
 const normalizeString = (value) => {
   return value.trim(); // Add any additional normalization logic you need here
 };
