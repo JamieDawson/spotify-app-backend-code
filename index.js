@@ -12,6 +12,7 @@ dotenv.config();
 const app = express();
 const PORT = process.env.PORT || 5555;
 const mongoDBURL = process.env.MONGODB_URL;
+app.use(cors()); // This will allow all origins
 
 // Use the CORS middleware
 app.use(
